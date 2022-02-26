@@ -27,4 +27,11 @@ router.get("/draft-order/:id", authMiddleware, getDraftOrderDetails);
 
 router.get("/abandoned-checkouts", authMiddleware, getAbandonedCheckouts);
 
+router.get("/test", (req, res) => {
+  res.status(200).send({
+    success: true,
+    message: "Node App working Fine.",
+  });
+});
+
 export default router;
