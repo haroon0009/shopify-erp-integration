@@ -16,3 +16,121 @@ export const getAllCustomers = async (req, res) => {
     res.status(500).send({ error: error.toString() });
   }
 };
+
+export const getCustomerDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const resp = await axios.get(`/customers/${id}.json`);
+    const { customer } = resp.data;
+    res.status(200).send({ customer });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};
+
+export const getOpenOrders = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const orders = await PaginatedList({
+      service: axios,
+      path: "orders.json",
+      service_name: "orders",
+      query: "status=open",
+    });
+    res.status(200).send({ orders });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};
+
+export const getClosedOrders = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const orders = await PaginatedList({
+      service: axios,
+      path: "orders.json",
+      service_name: "orders",
+      query: "status=closed",
+    });
+    res.status(200).send({ orders });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};
+
+export const getCancelledOrders = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const orders = await PaginatedList({
+      service: axios,
+      path: "orders.json",
+      service_name: "orders",
+      query: "status=cancelled",
+    });
+    res.status(200).send({ orders });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};
+
+export const getOrderDetail = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const resp = await axios.get(`/orders/${id}.json`);
+    const { order } = resp.data;
+    res.status(200).send({ order });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};
+
+export const getDraftOrders = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const draft_orders = await PaginatedList({
+      service: axios,
+      path: "draft_orders.json",
+      service_name: "draft_orders",
+    });
+
+    res.status(200).send({ draft_orders });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};
+
+export const getDraftOrderDetails = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const resp = await axios.get(`/draft_orders/${id}.json`);
+    const { draft_order } = resp.data;
+    res.status(200).send({ draft_order });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};
+
+export const getAbandonedCheckouts = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const checkouts = await PaginatedList({
+      service: axios,
+      path: "checkouts.json",
+      service_name: "checkouts",
+    });
+    res.status(200).send({ checkouts });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};

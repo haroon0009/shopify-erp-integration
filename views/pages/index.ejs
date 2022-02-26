@@ -2,19 +2,86 @@
 <html lang="en">
 <head>
   <%- include('../partials/head'); %>
+
+  <style>
+    p{
+      margin:0;
+    }
+
+    ul li{
+      margin-bottom:1rem;
+    }
+
+    .jwt-token{
+      word-break: break-all;
+
+    }
+
+    .bold{
+      font-weight: bold;
+    }
+    .instruction{
+      font-size: 18px;
+      font-weight: bold;
+      font-style: italic;
+    }
+
+    .italic{
+      font-style: italic;
+    }
+  </style>
 </head>
 <body class="container">
 
-<header>
-  <%- include('../partials/header'); %>
-</header>
 
-<main>
-  <div class="jumbotron">
-    <h1>This is great</h1>
-    <p>Welcome to templating using EJS</p>
+<main class="container">
+  <div >
+    <h3 class="text-center"><%= shop.shop_name %></h3>
 
-    <h3><%= shop.shop_name %></h3>
+    <h1>Api End Points</h1>
+    <p class="instruction">
+      Add this token as the <span class="bold">Bearer token</span> in the header of ur request.
+    </p>
+
+    <p class="bold">Note:</p>
+    <p class="italic">
+      req.headers[Authorization] = 'Bearer < token >'
+    </p>
+
+    <span class="jwt-token"> <span class="bold">Token: </span> <br /> <%= shop.token %></p>
+      <ul class="mt-4">
+        <% api_end_points.forEach(function(api){ %>
+          <li>
+            <p class="link">
+              <span class="request-type bold">
+                <%- api.request_type %> ::
+              </span>
+              <%- api.path %>
+            </p>
+            <a href="<%- api.doc_link %>" target="_blank">You can see payload here...</a>
+          </li>
+        <% }); %>
+      </ul>
+    
+
+    <h1>Webhook End points</h1>
+    <p class="my-2">
+      Handle these api end-points in your ERP system... You will get the payload in the body of ur request.
+    </p>
+    <ul>
+      <% webhooks.forEach(function(api){ %>
+        <li>
+          <p class="link">
+            <span class="request-type bold">
+              <%- api.request_type %> ::
+            </span>
+            <%- api.path %>
+          </p>
+          <a href="<%- api.doc_link %>" target="_blank">You can see payload here...</a>
+        </li>
+      <% }); %>
+    </ul>>
+
   </div>
 </main>
 
@@ -27,5 +94,8 @@
 
 <script>
   console.log("PAGE LODAED")
+
+  let data = '<% api_end_points %>'
+  console.log(JSON.stringify(data))
 </script>
 </html>

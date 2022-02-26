@@ -37,10 +37,6 @@ export const registerWebhooks = async (session) => {
         topic: "orders/updated",
         address: `${urlPrefix}/webhook/orders-updated`,
       },
-      {
-        topic: "customers/create",
-        address: `${urlPrefix}/webhook/customer-create`,
-      },
     ];
 
     const webHookFun = allWebhooks.map((webhook) => {

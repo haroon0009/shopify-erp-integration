@@ -15,6 +15,7 @@ import {
   ENV_HOST,
   ENV_PORT,
   API_VERSION,
+  ENV_ERP_URL,
 } from "./config/index.js";
 
 import "./db/index.js";
@@ -42,7 +43,107 @@ app.get("/", async function (req, res) {
   if (!shopExist) {
     res.redirect(`/login?shop=${shop}`);
   } else {
-    res.render("pages/index", { shop: shopExist });
+    const webhookDocs =
+      "https://shopify.dev/api/admin-rest/2022-01/resources/webhook#top";
+    let webhookEndPoints = [
+      {
+        path: "/webhook/orders-cancelled",
+        doc_link: webhookDocs,
+        request_type: "POST",
+      },
+      {
+        path: "/webhook/orders-create",
+        doc_link: webhookDocs,
+        request_type: "POST",
+      },
+      {
+        path: "/webhook/orders-fulfilled",
+        doc_link: webhookDocs,
+        request_type: "POST",
+      },
+      {
+        path: "/webhook/orders-updated",
+        doc_link: webhookDocs,
+        request_type: "POST",
+      },
+    ];
+
+    let apiEndPoints = [
+      {
+        path: "/api/customers",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/customer#get-customers",
+        request_type: "GET",
+      },
+      {
+        path: "/api/customer/:id",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/customer#get-customers-customer-id",
+        request_type: "GET",
+      },
+      {
+        path: "/api/orders/open",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/order#get-orders?status=any",
+        request_type: "GET",
+      },
+      {
+        path: "/api/orders/closed",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/order#get-orders?status=any",
+        request_type: "GET",
+      },
+      {
+        path: "/api/orders/cancelled",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/order#get-orders?status=any",
+        request_type: "GET",
+      },
+      {
+        path: "/api/order/:id",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/order#get-orders-order-id",
+        request_type: "GET",
+      },
+      {
+        path: "/api/draft-orders",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/draftorder#get-draft-orders",
+        request_type: "GET",
+      },
+      {
+        path: "/api/draft-order/:id",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/draftorder#get-draft-orders-draft-order-id",
+        request_type: "GET",
+      },
+      {
+        path: "/api/abandoned-checkouts/:id",
+        doc_link:
+          "https://shopify.dev/api/admin-rest/2022-01/resources/abandoned-checkouts#get-checkouts?limit=1",
+        request_type: "GET",
+      },
+    ];
+
+    apiEndPoints = apiEndPoints.map((doc) => {
+      return {
+        ...doc,
+        path: `${ENV_HOST}${doc.path}`,
+      };
+    });
+
+    webhookEndPoints = webhookEndPoints.map((doc) => {
+      return {
+        ...doc,
+        path: `${ENV_ERP_URL}${doc.path}`,
+      };
+    });
+
+    res.render("pages/index", {
+      shop: shopExist,
+      api_end_points: apiEndPoints,
+      webhooks: webhookEndPoints,
+    });
   }
 });
 
@@ -73,7 +174,7 @@ app.get("/auth/callback", async (req, res) => {
 
     await registerWebhooks(session);
 
-    const shop = await ShopModal.addOrUpdateShop({
+    await ShopModal.addOrUpdateShop({
       shop: shop_name,
       scope,
       accessToken,
