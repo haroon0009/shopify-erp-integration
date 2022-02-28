@@ -19,6 +19,7 @@ const {
   IS_PRIVATE,
   PORT,
   ERP_URL,
+  SHOP,
 } = process.env;
 
 export const ENV_SHOPIFY_API_KEY = SHOPIFY_API_KEY;
@@ -31,3 +32,4 @@ export const ENV_NODE_ENV = NODE_ENV;
 export const ENV_IS_PRIVATE = IS_PRIVATE;
 export const ENV_PORT = PORT;
 export const ENV_ERP_URL = ERP_URL;
+export const ENV_SHOP = SHOP;

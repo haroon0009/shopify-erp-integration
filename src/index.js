@@ -19,6 +19,7 @@ import {
 } from "./config/index.js";
 
 import "./db/index.js";
+import "./job/product-upload-job.js";
 
 const app = express();
 const Shopify = ShopifyApi.default;

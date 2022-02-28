@@ -1,6 +1,36 @@
 import PaginatedList from "../lib/paginated-list.js";
 import { ShopifyService } from "../service/shopify-service.js";
 
+function orderObject(order) {
+  const {
+    total_discounts,
+    total_price,
+    fulfillments,
+    line_items,
+    contact_email,
+    phone,
+    id,
+    customer,
+    shipping_address,
+  } = order;
+  const { tracking_number, tracking_company } = fulfillments;
+
+  return {
+    id,
+    customer_name: customer?.first_name ?? "guest",
+    address: shipping_address?.address1 ?? "no address available",
+    city: shipment?.city ?? "no city",
+    country: shipment?.country ?? "no country",
+    mobile: phone,
+    amount: total_price,
+    discount: total_discounts,
+    quantity: line_items.length,
+    sku: line_items.map((item) => item.sku),
+    tracking_number,
+    tracking_company,
+  };
+}
+
 export const getAllCustomers = async (req, res) => {
   try {
     const { shop_name, accessToken } = req.shop;
@@ -40,7 +70,7 @@ export const getOpenOrders = async (req, res) => {
       service_name: "orders",
       query: "status=open",
     });
-    res.status(200).send({ orders });
+    res.status(200).send({ orders: orders.map((order) => orderObject(order)) });
   } catch (error) {
     res.status(500).send({ error: error.toString() });
   }
@@ -56,7 +86,7 @@ export const getClosedOrders = async (req, res) => {
       service_name: "orders",
       query: "status=closed",
     });
-    res.status(200).send({ orders });
+    res.status(200).send({ orders: orders.map((order) => orderObject(order)) });
   } catch (error) {
     res.status(500).send({ error: error.toString() });
   }
@@ -72,7 +102,7 @@ export const getCancelledOrders = async (req, res) => {
       service_name: "orders",
       query: "status=cancelled",
     });
-    res.status(200).send({ orders });
+    res.status(200).send({ orders: orders.map((order) => orderObject(order)) });
   } catch (error) {
     res.status(500).send({ error: error.toString() });
   }
@@ -85,7 +115,8 @@ export const getOrderDetail = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const resp = await axios.get(`/orders/${id}.json`);
     const { order } = resp.data;
-    res.status(200).send({ order });
+
+    res.status(200).send({ order: orderObject(order) });
   } catch (error) {
     res.status(500).send({ error: error.toString() });
   }
@@ -101,7 +132,9 @@ export const getDraftOrders = async (req, res) => {
       service_name: "draft_orders",
     });
 
-    res.status(200).send({ draft_orders });
+    res
+      .status(200)
+      .send({ draft_orders: draft_orders.map((order) => orderObject(order)) });
   } catch (error) {
     res.status(500).send({ error: error.toString() });
   }
@@ -114,7 +147,7 @@ export const getDraftOrderDetails = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const resp = await axios.get(`/draft_orders/${id}.json`);
     const { draft_order } = resp.data;
-    res.status(200).send({ draft_order });
+    res.status(200).send({ draft_order: orderObject(draft_order) });
   } catch (error) {
     res.status(500).send({ error: error.toString() });
   }
