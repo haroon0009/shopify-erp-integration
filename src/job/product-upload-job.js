@@ -68,8 +68,8 @@ async function fetchProducts() {
           option2: Color?.trim() ?? "",
           sku: SKU?.trim() ?? "",
           barcode: BarCode?.trim() ?? "",
-          price: "--",
-          inventory_quantity: "--",
+          price: "00",
+          inventory_quantity: "00",
         });
       });
 
