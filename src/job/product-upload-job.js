@@ -80,6 +80,7 @@ async function fetchProducts() {
         title: ProductName.trim(),
         vendor: "lala textile",
         product_type: "cloths",
+        status: "draft",
         options,
         variants,
       };
