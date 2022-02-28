@@ -17,10 +17,11 @@ function orderObject(order) {
 
   return {
     id,
+    email: customer?.email ?? contact_email,
     customer_name: customer?.first_name ?? "guest",
     address: shipping_address?.address1 ?? "no address available",
-    city: shipment?.city ?? "no city",
-    country: shipment?.country ?? "no country",
+    city: shipping_address?.city ?? "no city",
+    country: shipping_address?.country ?? "no country",
     mobile: phone,
     amount: total_price,
     discount: total_discounts,
