@@ -1,7 +1,8 @@
 import { ShopModal } from "../model/index.js";
 import { ShopifyService } from "../service/index.js";
-import { ENV_HOST } from "../config/index.js";
+import { ENV_HOST, ENV_SHOP } from "../config/index.js";
 import { ERP_SERVICE } from "../service/erp-service.js";
+import { orderObject } from "../controllers/index.js";
 
 export const registerWebhooks = async (session) => {
   try {
@@ -24,14 +25,6 @@ export const registerWebhooks = async (session) => {
       {
         topic: "orders/fulfilled",
         address: `${urlPrefix}/webhook/orders-fulfilled`,
-      },
-      {
-        topic: "orders/paid",
-        address: `${urlPrefix}/webhook/orders-paid`,
-      },
-      {
-        topic: "orders/partially_fulfilled",
-        address: `${urlPrefix}/webhook/orders-partially-fulfilled`,
       },
       {
         topic: "orders/updated",
@@ -76,13 +69,18 @@ export const uninstallShopHandler = async (body) => {
   if (shop) shop.remove();
 };
 
-export const webhookHandler = ({ path, body }) => {
-  ERP_SERVICE.post(path, body)
-    .then((resp) => {
-      console.log(path, "  webhook process successfully...!");
-    })
-    .catch((err) => {
-      console.log(path, "==>>WEBHOOK PROCESS FAILED");
-      console.log(err);
-    });
+export const webhookHandler = async ({ path, body }) => {
+  try {
+    const shop = await ShopModal.findOne({ shop_name: ENV_SHOP });
+    if (!shop) return console.log("webhookHandler SHOP NOT FOUND");
+    const { accessToken, shop_name } = shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const payload = await orderObject(body, axios);
+
+    await ERP_SERVICE.post(path, payload);
+    console.log(path, "===>>>webhook process successfully");
+  } catch (err) {
+    console.log(path, "==>>WEBHOOK PROCESS FAILED");
+    console.log(err);
+  }
 };

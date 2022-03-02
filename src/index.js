@@ -119,7 +119,7 @@ app.get("/", async function (req, res) {
         request_type: "GET",
       },
       {
-        path: "/api/abandoned-checkouts/:id",
+        path: "/api/abandoned-checkouts",
         doc_link:
           "https://shopify.dev/api/admin-rest/2022-01/resources/abandoned-checkouts#get-checkouts?limit=1",
         request_type: "GET",
