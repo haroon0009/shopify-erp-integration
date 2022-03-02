@@ -30,13 +30,8 @@ export async function orderObject(order, axios) {
   const products = [];
 
   for (let i = 0; i < line_items.length; i++) {
-    const {
-      product_id,
-      variant_id,
-      fulfillable_quantity,
-      total_discount,
-      price,
-    } = line_items[i];
+    const { product_id, variant_id, quantity, total_discount, price } =
+      line_items[i];
     const variant = await fetchVariant(axios, variant_id);
     const { barcode, sku } = variant;
     products.push({
@@ -44,7 +39,7 @@ export async function orderObject(order, axios) {
       variant_id,
       price,
       // discount:total_discount,
-      quantity: fulfillable_quantity,
+      quantity,
       barcode,
       sku,
     });
