@@ -19,7 +19,14 @@ export async function orderObject(order, axios) {
     shipping_address,
     current_total_tax,
   } = order;
-  const { tracking_number, tracking_company } = fulfillments;
+  let tracking_number;
+  let tracking_company;
+
+  if (fulfillments && fulfillments.length) {
+    tracking_number = fulfillments[0].tracking_number;
+    tracking_company = fulfillments[0].tracking_company;
+  }
+
   const products = [];
 
   for (let i = 0; i < line_items.length; i++) {
