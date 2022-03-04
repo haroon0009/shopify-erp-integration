@@ -28,7 +28,7 @@ webhookRoutes.post("/orders-create", validateWebhook, (req, res) => {
 
 webhookRoutes.post("/orders-fulfilled", validateWebhook, (req, res) => {
   webhookHandler({
-    path: "/orders-fulfilled",
+    path: "/OrdersFulfill",
     body: req.body,
   });
   res.status(200).send("OK");
