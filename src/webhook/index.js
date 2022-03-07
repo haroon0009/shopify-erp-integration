@@ -81,6 +81,6 @@ export const webhookHandler = async ({ path, body }) => {
     console.log(path, "===>>>webhook process successfully");
   } catch (err) {
     console.log(path, "==>>WEBHOOK PROCESS FAILED");
-    console.log(err?.response?.data?.error ?? err);
+    console.log(err?.response?.data ?? err);
   }
 };
