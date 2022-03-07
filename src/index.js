@@ -58,7 +58,7 @@ app.get("/", async function (req, res) {
         request_type: "POST",
       },
       {
-        path: "/webhook/orders-fulfilled",
+        path: "/OrdersFulfill",
         doc_link: webhookDocs,
         request_type: "POST",
       },

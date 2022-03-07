@@ -31,7 +31,7 @@ router.get("/abandoned-checkouts", authMiddleware, getAbandonedCheckouts);
 
 router.get("/test", async (req, res) => {
   try {
-    const resp = await ERP_SERVICE.get("/getallproducts");
+    const resp = await ERP_SERVICE.get("/Products");
     const products = resp.data;
     res.status(200).send({
       success: true,

@@ -32,7 +32,7 @@ cron.schedule("0 0 * * *", async () => {
 
 async function fetchProducts() {
   try {
-    const resp = await ERP_SERVICE.get("/getallproducts");
+    const resp = await ERP_SERVICE.get("/Products");
     const erp_products = resp.data;
 
     const uniqueProducts = erp_products.reduce((acc, current) => {
@@ -58,7 +58,7 @@ async function fetchProducts() {
       );
 
       allProds.forEach((p) => {
-        const { Size, Color, BarCode, SKU } = p;
+        const { Size, Color, BarCode, SKU, Price, Quantity } = p;
         // if (Size) sizes.push(Size.trim());
         if (Color && Color !== ".") colors.push(Color);
 
@@ -68,8 +68,8 @@ async function fetchProducts() {
           option2: Color?.trim() ?? "",
           sku: SKU?.trim() ?? "",
           barcode: BarCode?.trim() ?? "",
-          price: "00",
-          inventory_quantity: "00",
+          price: Price?.trim() ?? "00",
+          inventory_quantity: Quantity?.trim() ?? 0,
         });
       });
 
