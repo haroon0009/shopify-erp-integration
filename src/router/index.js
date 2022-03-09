@@ -12,6 +12,7 @@ import {
   getDraftOrders,
   getDraftOrderDetails,
   getAbandonedCheckouts,
+  getCancelledAny,
 } from "../controllers/index.js";
 
 const router = new express.Router();
@@ -22,6 +23,8 @@ router.get("/customer/:id", authMiddleware, getCustomerDetails);
 router.get("/orders/open", authMiddleware, getOpenOrders);
 router.get("/orders/closed", authMiddleware, getClosedOrders);
 router.get("/orders/cancelled", authMiddleware, getCancelledOrders);
+router.get("/orders/any", authMiddleware, getCancelledAny);
+
 router.get("/order/:id", authMiddleware, getOrderDetail);
 
 router.get("/draft-orders", authMiddleware, getDraftOrders);
