@@ -270,3 +270,26 @@ export const getCancelledAny = async (req, res) => {
     res.status(500).send({ error: error.toString() });
   }
 };
+
+export const allFullFilledOrders = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const axios = new ShopifyService({ shop_name, accessToken });
+    const ordersList = await PaginatedList({
+      service: axios,
+      path: "orders.json",
+      service_name: "orders",
+      query: "status=any",
+    });
+    const orders = [];
+    for (let i = 0; i < ordersList.length; i++) {
+      const order = await orderObject(ordersList[i], axios);
+      orders.push(order);
+    }
+    res
+      .status(200)
+      .send({ orders: orders.map((order) => order.status === "fulfilled") });
+  } catch (error) {
+    res.status(500).send({ error: error.toString() });
+  }
+};
