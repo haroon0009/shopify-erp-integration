@@ -19,6 +19,7 @@ export async function orderObject(order, axios) {
     shipping_address,
     current_total_tax,
     fulfillment_status,
+    financial_status,
   } = order;
   let tracking_number;
   let tracking_company;
@@ -61,6 +62,7 @@ export async function orderObject(order, axios) {
     tracking_company: tracking_company || "",
     products,
     status: fulfillment_status,
+    financial_status,
   };
 }
 
