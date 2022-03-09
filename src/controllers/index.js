@@ -288,7 +288,7 @@ export const allFullFilledOrders = async (req, res) => {
     }
     res
       .status(200)
-      .send({ orders: orders.map((order) => order.status === "fulfilled") });
+      .send({ orders: orders.filter((order) => order.status === "fulfilled") });
   } catch (error) {
     res.status(500).send({ error: error.toString() });
   }
