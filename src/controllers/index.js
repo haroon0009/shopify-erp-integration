@@ -31,7 +31,7 @@ export async function orderObject(order, axios) {
     tracking_company = fulfillments[0].tracking_company;
 
     console.log(`fulfillments ${id} ==>>`, fulfillments);
-    let fulfilled = fulfillments.findIndex((f) => f.status === "success");
+    let fulfilled = fulfillments.find((f) => f.status === "success");
     if (fulfilled) fulfillment_date = fulfilled.created_at;
   }
 
