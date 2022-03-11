@@ -20,13 +20,19 @@ export async function orderObject(order, axios) {
     current_total_tax,
     fulfillment_status,
     financial_status,
+    created_at,
   } = order;
   let tracking_number;
   let tracking_company;
+  let fulfillment_date;
 
   if (fulfillments && fulfillments.length) {
     tracking_number = fulfillments[0].tracking_number;
     tracking_company = fulfillments[0].tracking_company;
+
+    console.log(`fulfillments ${id} ==>>`, fulfillments);
+    let fulfilled = fulfillments.findIndex((f) => f.status === "success");
+    if (fulfilled) fulfillment_date = fulfilled.created_at;
   }
 
   const products = [];
@@ -63,6 +69,8 @@ export async function orderObject(order, axios) {
     products,
     status: fulfillment_status,
     financial_status,
+    order_date: created_at,
+    fulfillment_date,
   };
 }
 
