@@ -1,5 +1,5 @@
-import PaginatedList from "../lib/paginated-list.js";
-import { ShopifyService } from "../service/shopify-service.js";
+import PaginatedList from '../lib/paginated-list.js';
+import { ShopifyService } from '../service/shopify-service.js';
 
 export async function fetchVariant(axios, id) {
   const resp = await axios.get(`/variants/${id}.json`);
@@ -21,6 +21,7 @@ export async function orderObject(order, axios) {
     fulfillment_status,
     financial_status,
     created_at,
+    name,
   } = order;
   let tracking_number;
   let tracking_company;
@@ -30,7 +31,7 @@ export async function orderObject(order, axios) {
     tracking_number = fulfillments[0].tracking_number;
     tracking_company = fulfillments[0].tracking_company;
 
-    let fulfilled = fulfillments.find((f) => f.status === "success");
+    let fulfilled = fulfillments.find((f) => f.status === 'success');
     if (fulfilled) fulfillment_date = fulfilled.created_at;
   }
 
@@ -54,22 +55,23 @@ export async function orderObject(order, axios) {
 
   return {
     id,
+    products,
+    financial_status,
+    fulfillment_date,
     email: customer?.email ?? contact_email,
-    customer_name: customer?.first_name ?? "guest",
-    address: shipping_address?.address1 ?? "no address available",
-    city: shipping_address?.city ?? "no city",
-    country: shipping_address?.country ?? "no country",
+    customer_name: customer?.first_name ?? 'guest',
+    address: shipping_address?.address1 ?? 'no address available',
+    city: shipping_address?.city ?? 'no city',
+    country: shipping_address?.country ?? 'no country',
     mobile: phone,
     discount: total_discounts,
     total_tax: current_total_tax,
     amount: total_price,
-    tracking_number: tracking_number || "",
-    tracking_company: tracking_company || "",
-    products,
+    tracking_number: tracking_number || '',
+    tracking_company: tracking_company || '',
     status: fulfillment_status,
-    financial_status,
     order_date: created_at,
-    fulfillment_date,
+    order_reference: name,
   };
 }
 
@@ -85,12 +87,12 @@ function draftOrderObj(obj) {
 
   return {
     id,
-    email: customer?.email ?? "",
-    mobile: customer?.phone ?? "",
-    customer_name: customer?.first_name ?? "",
-    address: shipping_address?.address1 ?? "",
-    city: shipping_address?.city ?? "",
-    country: shipping_address?.country ?? "",
+    email: customer?.email ?? '',
+    mobile: customer?.phone ?? '',
+    customer_name: customer?.first_name ?? '',
+    address: shipping_address?.address1 ?? '',
+    city: shipping_address?.city ?? '',
+    country: shipping_address?.country ?? '',
     amount: total_price,
     discount: applied_discount?.amount ?? 0,
     products: line_items.map((prod) => {
@@ -113,8 +115,8 @@ export const getAllCustomers = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const customers = await PaginatedList({
       service: axios,
-      path: "customers.json",
-      service_name: "customers",
+      path: 'customers.json',
+      service_name: 'customers',
     });
 
     res.status(200).send({ customers });
@@ -142,9 +144,9 @@ export const getOpenOrders = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const ordersList = await PaginatedList({
       service: axios,
-      path: "orders.json",
-      service_name: "orders",
-      query: "status=open",
+      path: 'orders.json',
+      service_name: 'orders',
+      query: 'status=open',
     });
     const orders = [];
     for (let i = 0; i < ordersList.length; i++) {
@@ -163,9 +165,9 @@ export const getClosedOrders = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const ordersList = await PaginatedList({
       service: axios,
-      path: "orders.json",
-      service_name: "orders",
-      query: "status=closed",
+      path: 'orders.json',
+      service_name: 'orders',
+      query: 'status=closed',
     });
     const orders = [];
     for (let i = 0; i < ordersList.length; i++) {
@@ -184,9 +186,9 @@ export const getCancelledOrders = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const ordersList = await PaginatedList({
       service: axios,
-      path: "orders.json",
-      service_name: "orders",
-      query: "status=cancelled",
+      path: 'orders.json',
+      service_name: 'orders',
+      query: 'status=cancelled',
     });
     const orders = [];
     for (let i = 0; i < ordersList.length; i++) {
@@ -219,8 +221,8 @@ export const getDraftOrders = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const draft_orders = await PaginatedList({
       service: axios,
-      path: "draft_orders.json",
-      service_name: "draft_orders",
+      path: 'draft_orders.json',
+      service_name: 'draft_orders',
     });
 
     res.status(200).send({
@@ -250,8 +252,8 @@ export const getAbandonedCheckouts = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const checkouts = await PaginatedList({
       service: axios,
-      path: "checkouts.json",
-      service_name: "checkouts",
+      path: 'checkouts.json',
+      service_name: 'checkouts',
     });
     res.status(200).send({ checkouts });
   } catch (error) {
@@ -265,9 +267,9 @@ export const getCancelledAny = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const ordersList = await PaginatedList({
       service: axios,
-      path: "orders.json",
-      service_name: "orders",
-      query: "status=any",
+      path: 'orders.json',
+      service_name: 'orders',
+      query: 'status=any',
     });
     const orders = [];
     for (let i = 0; i < ordersList.length; i++) {
@@ -286,9 +288,9 @@ export const allFullFilledOrders = async (req, res) => {
     const axios = new ShopifyService({ shop_name, accessToken });
     const ordersList = await PaginatedList({
       service: axios,
-      path: "orders.json",
-      service_name: "orders",
-      query: "status=any",
+      path: 'orders.json',
+      service_name: 'orders',
+      query: 'status=any',
     });
     const orders = [];
     for (let i = 0; i < ordersList.length; i++) {
@@ -297,7 +299,7 @@ export const allFullFilledOrders = async (req, res) => {
     }
     res
       .status(200)
-      .send({ orders: orders.filter((order) => order.status === "fulfilled") });
+      .send({ orders: orders.filter((order) => order.status === 'fulfilled') });
   } catch (error) {
     res.status(500).send({ error: error.toString() });
   }
