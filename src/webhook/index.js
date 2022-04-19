@@ -1,4 +1,4 @@
-import { ShopModal, FulFillmentModal } from '../model/index.js';
+import { ShopModal, FulFillmentModal, ErrorMessage } from '../model/index.js';
 import { ShopifyService } from '../service/index.js';
 import { ENV_HOST, ENV_SHOP } from '../config/index.js';
 import { ERP_SERVICE } from '../service/erp-service.js';
@@ -59,6 +59,11 @@ export const registerWebhooks = async (session) => {
     }
     console.log('ALL WEBHOOKS REGISTERED SUCCESSFULLY...! ');
   } catch (error) {
+    const msg = new ErrorMessage({
+      type: 'webhook registration error',
+      meta_details: error,
+    });
+    await msg.save();
     console.log('WEBHOOK REGISTRATION ERROR', error);
   }
 };
@@ -79,9 +84,12 @@ export const webhookHandler = async ({ path, body }) => {
     await ERP_SERVICE.post(path, payload);
     const fulfillment = new FulFillmentModal({ path, meta_details: body });
     await fulfillment.save();
-    console.log(path, '===>>>webhook process successfully');
   } catch (err) {
-    console.log(path, '==>>WEBHOOK PROCESS FAILED');
+    const msg = new ErrorMessage({
+      type: `Webhook handler Error ${path}`,
+      meta_details: err,
+    });
+    await msg.save();
     console.log(err?.response?.data ?? err);
   }
 };

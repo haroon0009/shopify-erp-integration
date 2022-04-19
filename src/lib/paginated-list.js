@@ -1,12 +1,14 @@
+import { ErrorMessage } from '../model/index.js';
+
 const parseHeaderLink = (link) => {
   let nextPageInfo;
   let prevPageInfo;
 
   if (link) {
-    const parentArr = link.split(" ");
+    const parentArr = link.split(' ');
     function extractLink(str) {
-      const splitStr = str.split("&");
-      const pageSplit = splitStr[1].split("=");
+      const splitStr = str.split('&');
+      const pageSplit = splitStr[1].split('=');
       return pageSplit[1];
     }
 
@@ -14,7 +16,7 @@ const parseHeaderLink = (link) => {
       prevPageInfo = extractLink(parentArr[0]);
       nextPageInfo = extractLink(parentArr[2]);
     } else {
-      if (link.includes("next")) {
+      if (link.includes('next')) {
         nextPageInfo = extractLink(parentArr[0]);
       }
     }
@@ -42,7 +44,7 @@ const paginatedList = async ({ service, path, query, service_name }) => {
       const { nextPageInfo, prevPageInfo } = parseHeaderLink(resp.headers.link);
 
       if (nextPageInfo) {
-        pageInfo = nextPageInfo.replace(">;", "");
+        pageInfo = nextPageInfo.replace('>;', '');
       } else {
         pageInfo = false;
         hasNext = false;
@@ -51,7 +53,10 @@ const paginatedList = async ({ service, path, query, service_name }) => {
 
     return allList;
   } catch (error) {
-    console.log(error);
+    const msg = new ErrorMessage({
+      type: `shopify fetching error ${service_name}`,
+      meta_details: error,
+    });
     throw new Error(error);
   }
 };

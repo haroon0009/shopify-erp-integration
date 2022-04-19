@@ -1,10 +1,10 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 dotenv.config();
 
-import { ApiVersion } from "@shopify/shopify-api";
+import { ApiVersion } from '@shopify/shopify-api';
 
 export const API_VERSION = ApiVersion.October21;
-export const API_PREFIX = "/api/v1/";
+export const API_PREFIX = '/api/v1/';
 export const SHOPIFY_API_DELAY = 150;
 
 // environment variables
@@ -20,6 +20,7 @@ const {
   PORT,
   ERP_URL,
   SHOP,
+  BRAND_GROUP,
 } = process.env;
 
 export const ENV_SHOPIFY_API_KEY = SHOPIFY_API_KEY;
@@ -33,3 +34,4 @@ export const ENV_IS_PRIVATE = IS_PRIVATE;
 export const ENV_PORT = PORT;
 export const ENV_ERP_URL = ERP_URL;
 export const ENV_SHOP = SHOP;
+export const ENV_BRAND_GROUP = BRAND_GROUP;

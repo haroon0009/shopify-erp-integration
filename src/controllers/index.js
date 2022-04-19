@@ -1,5 +1,5 @@
 import PaginatedList from '../lib/paginated-list.js';
-import { ShopifyService } from '../service/shopify-service.js';
+import { ShopifyService, ErrorMessage } from '../service/shopify-service.js';
 
 export async function fetchVariant(axios, id) {
   const resp = await axios.get(`/variants/${id}.json`);
@@ -109,6 +109,15 @@ function draftOrderObj(obj) {
   };
 }
 
+async function saveErrorMessage(error, funName) {
+  const msg = new ErrorMessage({
+    type: `Main controller: ${funName}`,
+    meta_details: error,
+  });
+
+  await msg.save();
+}
+
 export const getAllCustomers = async (req, res) => {
   try {
     const { shop_name, accessToken } = req.shop;
@@ -121,6 +130,7 @@ export const getAllCustomers = async (req, res) => {
 
     res.status(200).send({ customers });
   } catch (error) {
+    saveErrorMessage(error, 'getAllCustomers');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -134,6 +144,7 @@ export const getCustomerDetails = async (req, res) => {
     const { customer } = resp.data;
     res.status(200).send({ customer });
   } catch (error) {
+    saveErrorMessage(error, 'getCustomerDetails');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -155,6 +166,7 @@ export const getOpenOrders = async (req, res) => {
     }
     res.status(200).send({ orders });
   } catch (error) {
+    saveErrorMessage(error, 'getOpenOrders');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -176,6 +188,7 @@ export const getClosedOrders = async (req, res) => {
     }
     res.status(200).send({ orders });
   } catch (error) {
+    saveErrorMessage(error, 'getClosedOrders');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -197,6 +210,7 @@ export const getCancelledOrders = async (req, res) => {
     }
     res.status(200).send({ orders });
   } catch (error) {
+    saveErrorMessage(error, 'getCancelledOrders');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -211,6 +225,7 @@ export const getOrderDetail = async (req, res) => {
     const order = await orderObject(orderObj, axios);
     res.status(200).send({ order });
   } catch (error) {
+    saveErrorMessage(error, 'getOrderDetail');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -229,6 +244,7 @@ export const getDraftOrders = async (req, res) => {
       draft_orders: draft_orders.map((order) => draftOrderObj(order)),
     });
   } catch (error) {
+    saveErrorMessage(error, 'getDraftOrders');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -242,6 +258,7 @@ export const getDraftOrderDetails = async (req, res) => {
     const { draft_order } = resp.data;
     res.status(200).send({ draft_order: draftOrderObj(draft_order) });
   } catch (error) {
+    saveErrorMessage(error, 'getDraftOrderDetails');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -257,6 +274,7 @@ export const getAbandonedCheckouts = async (req, res) => {
     });
     res.status(200).send({ checkouts });
   } catch (error) {
+    saveErrorMessage(error, 'getAbandonedCheckouts');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -278,6 +296,7 @@ export const getCancelledAny = async (req, res) => {
     }
     res.status(200).send({ orders });
   } catch (error) {
+    saveErrorMessage(error, 'getCancelledAny');
     res.status(500).send({ error: error.toString() });
   }
 };
@@ -301,6 +320,7 @@ export const allFullFilledOrders = async (req, res) => {
       .status(200)
       .send({ orders: orders.filter((order) => order.status === 'fulfilled') });
   } catch (error) {
+    saveErrorMessage(error, 'allFullFilledOrders');
     res.status(500).send({ error: error.toString() });
   }
 };

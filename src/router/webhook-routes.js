@@ -5,7 +5,6 @@ import { uninstallShopHandler, webhookHandler } from '../webhook/index.js';
 export const webhookRoutes = new express.Router();
 
 webhookRoutes.post('/uninstall-shop', validateWebhook, (req, res) => {
-  console.log(`${req.shop_name} uninstalled the app`);
   uninstallShopHandler(req.body);
   res.status(200).send('OK');
 });

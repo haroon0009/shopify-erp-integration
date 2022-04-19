@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema(
   {
-    path: {
+    type: {
       type: String,
       required: true,
     },
@@ -10,14 +10,10 @@ const schema = new mongoose.Schema(
       type: mongoose.Mixed,
       default: null,
     },
-    type: {
-      type: String,
-      default: 'order',
-    },
   },
   {
     timestamps: true,
   }
 );
 
-export const FulFillmentModal = mongoose.model('FulFillment', schema);
+export const ErrorMessage = mongoose.model('ErrorMessage', schema);
