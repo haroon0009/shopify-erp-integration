@@ -1,5 +1,6 @@
 import PaginatedList from '../lib/paginated-list.js';
-import { ShopifyService, ErrorMessage } from '../service/shopify-service.js';
+import { ShopifyService } from '../service/shopify-service.js';
+import { ErrorMessage } from '../model/index.js';
 
 export async function fetchVariant(axios, id) {
   const resp = await axios.get(`/variants/${id}.json`);
