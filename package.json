@@ -24,6 +24,7 @@
     "lodash": "^4.17.21",
     "mongoose": "^6.2.1",
     "node-cron": "^3.0.0",
+    "node-xlsx": "^0.21.0",
     "raw-body": "^2.5.0",
     "socket.io": "^4.4.1"
   },

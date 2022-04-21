@@ -90,6 +90,6 @@ export const webhookHandler = async ({ path, body }) => {
       meta_details: err,
     });
     await msg.save();
-    console.log(err?.response?.data ?? err);
+    console.log('ERROR in webhook handler', err?.response?.data ?? err);
   }
 };

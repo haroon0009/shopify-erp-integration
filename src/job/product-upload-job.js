@@ -42,14 +42,16 @@ async function fetchProducts() {
     const resp = await ERP_SERVICE.get('/Products');
     const erp_products = resp.data;
 
-    const uniqueProducts = erp_products.reduce((acc, current) => {
-      const { ProductName } = current;
-      const index = acc.findIndex((p) => p.ProductName === ProductName);
-      if (index == -1) {
-        return [...acc, current];
-      }
-      return acc;
-    }, []);
+    const uniqueProducts = erp_products
+      .reduce((acc, current) => {
+        const { ProductName } = current;
+        const index = acc.findIndex((p) => p.ProductName === ProductName);
+        if (index == -1) {
+          return [...acc, current];
+        }
+        return acc;
+      }, [])
+      .filter((prod) => prod.Status === 'NEW');
 
     const products = uniqueProducts
       .map((product) => {
@@ -66,17 +68,16 @@ async function fetchProducts() {
         );
 
         allProds.forEach((p) => {
-          const { Size, Color, BarCode, SKU, Price, Quantity } = p;
+          const { Size, Color, BarCode, SKU, SaleRate, Quantity } = p;
           // if (Size) sizes.push(Size.trim());
           if (Color && Color !== '.') colors.push(Color);
 
-          //   TODO:: prices and stocks are missing
           variants.push({
             option1: Size?.trim() ?? '',
             option2: Color?.trim() ?? '',
             sku: SKU?.trim() ?? '',
             barcode: BarCode?.trim() ?? '',
-            price: Price?.trim() ?? '00',
+            price: String(SaleRate) || '00',
             inventory_quantity: Quantity?.trim() ?? 0,
           });
         });

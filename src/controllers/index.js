@@ -325,3 +325,21 @@ export const allFullFilledOrders = async (req, res) => {
     res.status(500).send({ error: error.toString() });
   }
 };
+
+export const makeOrderFulfilled = async (req, res) => {
+  try {
+    const { shop_name, accessToken } = req.shop;
+    const id = req.body.order_id;
+    const shopifyService = new ShopifyService({ shop_name, accessToken });
+    const resp = await shopifyService.get(`/orders/${id}.json`);
+    const order = resp.data.order;
+    const orderObj = await orderObject(order);
+    await erpInstance.post('/OrdersFulfill', orderObj);
+    res
+      .status(201)
+      .send({ message: 'Order Saved Successfully...!', success: true });
+  } catch (error) {
+    saveErrorMessage(error, 'makeOrderFulfilled');
+    res.status(500).send({ error: error.toString() });
+  }
+};
