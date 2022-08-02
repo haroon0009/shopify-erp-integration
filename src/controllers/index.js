@@ -333,7 +333,7 @@ export const makeOrderFulfilled = async (req, res) => {
     const shopifyService = new ShopifyService({ shop_name, accessToken });
     const resp = await shopifyService.get(`/orders/${id}.json`);
     const order = resp.data.order;
-    const orderObj = await orderObject(order);
+    const orderObj = await orderObject(order, shopifyService);
     await erpInstance.post('/OrdersFulfill', orderObj);
     res
       .status(201)
