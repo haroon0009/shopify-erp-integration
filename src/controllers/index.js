@@ -339,6 +339,7 @@ export const makeOrderFulfilled = async (req, res) => {
       .status(201)
       .send({ message: 'Order Saved Successfully...!', success: true });
   } catch (error) {
+    console.log(error);
     saveErrorMessage(error, 'makeOrderFulfilled');
     res.status(500).send({ error: error.toString() });
   }
