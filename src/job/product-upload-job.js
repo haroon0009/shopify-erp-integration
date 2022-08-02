@@ -88,8 +88,8 @@ async function fetchProducts() {
         // ENV_BRAND_GROUP
 
         return {
-          title: ProductName.trim(),
-          vendor: BrandGroup.trim(),
+          title: ProductName?.trim(),
+          vendor: BrandGroup?.trim() ?? 'lala',
           product_type: 'cloths',
           status: 'draft',
           options,
