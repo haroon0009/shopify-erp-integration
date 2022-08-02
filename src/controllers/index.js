@@ -1,5 +1,6 @@
 import PaginatedList from '../lib/paginated-list.js';
 import { ShopifyService } from '../service/shopify-service.js';
+import { ERP_SERVICE } from '../service/erp-service.js';
 import { ErrorMessage } from '../model/index.js';
 
 export async function fetchVariant(axios, id) {
@@ -334,7 +335,7 @@ export const makeOrderFulfilled = async (req, res) => {
     const resp = await shopifyService.get(`/orders/${id}.json`);
     const order = resp.data.order;
     const orderObj = await orderObject(order, shopifyService);
-    await erpInstance.post('/OrdersFulfill', orderObj);
+    await ERP_SERVICE.post('/OrdersFulfill', orderObj);
     res
       .status(201)
       .send({ message: 'Order Saved Successfully...!', success: true });
